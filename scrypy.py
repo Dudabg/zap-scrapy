@@ -1,21 +1,20 @@
 import requests
-import re
-import math
 from bs4 import BeautifulSoup
-import pandas as pd
-import selenium
-
-
-url =  "https://www.zapimoveis.com.br/venda/apartamentos/mg+uberlandia/"
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.142.86 Safari/537.36"
+    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
 }
 
-site = requests.get (url, headers=headers)
-soup = BeautifulSoup(site.content, "html.parser")
-imoveis = soup.find_all('div', class_="i-card__content")
-ultima_pagina = soup.find('span', class_="pagination__next")
+apartamentos_totais = []
+pagina = 1
+for pagina in range(1, 101):  # Loop de 1 a 100
+    url = f'https://www.zapimoveis.com.br/venda/apartamentos/mg+uberlandia/?pagina={pagina}'  
+    site = requests.get(url, headers=headers)
+    soup = BeautifulSoup(site.content, 'html.parser')
+    #apartamentos_totais #= soup
+    print(site.status_code)
+    apartamentos = soup.find_all('div', class_="l-card__content")
+    print (len(apartamentos))   
 
 
-
+    
