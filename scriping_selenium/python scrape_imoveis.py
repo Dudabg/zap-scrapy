@@ -35,3 +35,12 @@ for apartamento in apartamentos_totais:
     print('Preço:', apartamento['Preco'])
     print('Localização:', apartamento['Localizacao'])
     print('---')
+
+
+# Cria um DataFrame com os dados extraídos
+df = pd.DataFrame(apartamentos_totais)
+
+# Salva o DataFrame em um arquivo Excel
+df.to_excel('apartamentos.xlsx', index=False)
+
+print('Dados exportados para apartamentos.xlsx com sucesso!')

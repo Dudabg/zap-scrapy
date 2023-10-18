@@ -1,14 +1,18 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options  # Importe a classe Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
-import pandas as pd
+import time
 
-# Inicializa o driver do Chrome
-driver = webdriver.Chrome(executable_path='C:\Users\HP\Desktop\estudos maria eduarda\chromedriver.exe')
-
+# Inicializa o driver do Chrome sem exibir a interface gráfica
+chrome_options = Options()  # Use Options() aqui
+chrome_options.add_argument('--headless')
+driver = webdriver.Chrome(options=chrome_options)  # Passe as opções como argumento
 
 # Abre a página
 driver.get('https://www.zapimoveis.com.br/venda/apartamentos/mg+uberlandia/?pagina=1')
@@ -21,7 +25,7 @@ wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'l-card__content')))
 for _ in range(3):
     driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
     # Espera um pouco após rolar para dar tempo de carregar mais apartamentos
-    driver.implicitly_wait(2)
+    time.sleep(2)
 
 # Obtém o conteúdo da página após rolar
 soup = BeautifulSoup(driver.page_source, 'html.parser')
