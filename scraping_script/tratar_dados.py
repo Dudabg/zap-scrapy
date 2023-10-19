@@ -1,33 +1,49 @@
-import re
+import requests
 import json
+import pandas as pd
+from bs4 import BeautifulSoup  # Importe o BeautifulSoup
 
-# 1. Seu script com os dados (substitua com seus dados reais)
-script = """
-[SEU SCRIPT AQUI]
-"""
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36'
+}
 
-# 2. Defina seu padrão de expressão regular para encontrar os dados desejados
-padrao_regex = r'SEU_PADRAO_REGEX_AQUI'
-padrao = re.compile(padrao_regex)
-resultados = padrao.findall(script)
+apartamentos_totais = []
 
-# 3. Estruture os dados extraídos (substitua com a lógica específica do seu caso)
-dados_extraidos = []
-for resultado in resultados:
-    # Processar resultado conforme necessário e adicionar à lista dados_extraidos
-    # Exemplo de processamento: dados_extraidos.append(processar_resultado(resultado))
-    dados_extraidos.append(resultado)
+url = 'https://www.zapimoveis.com.br/venda/apartamentos/mg+uberlandia/'
 
-# 4. Converta os dados para o formato JSON
-dados_json = json.dumps(dados_extraidos, indent=4)
+# Fazendo a requisição para a página
+response = requests.get(url, headers=headers)
 
-# 5. Salve os dados JSON em um arquivo (opcional)
-with open('dados.json', 'w') as arquivo:
-    arquivo.write(dados_json)
+# Use o BeautifulSoup para analisar o conteúdo da página
+soup = BeautifulSoup(response.content, 'html.parser')
 
-# OU manipule os dados JSON diretamente no seu código
-dados = json.loads(dados_json)
-# Agora você pode acessar os dados como um objeto Python
-print(dados[0]['campo'])  # Substitua 'campo' pelo nome real do campo que você deseja acessar
+# Encontre o script com os dados JSON no código-fonte da página
+script_data = None
+scripts = soup.find_all('script')
+for script in scripts:
+    if 'window.__INITIAL_STATE__' in str(script):
+        script_data = script
+        break
 
-# Lembre-se de personalizar SEU_PADRAO_REGEX_AQUI e a lógica de processamento de dados conforme necessário para o seu caso específico.
+# Extraindo e analisando o JSON do script
+if script_data:
+    json_data = json.loads(script_data.string.split('window.__INITIAL_STATE__ = ')[1])
+    imoveis = json_data['results']['listings']
+
+    for imovel in imoveis:
+        detalhes_imovel = {
+            'Titulo': imovel['listing']['title'],
+            'Preco': imovel['listing']['price']['price'],
+            'Localizacao': imovel['listing']['address']['neighborhood'],
+            'Descricao': imovel['listing']['description'],
+            'Tamanho': imovel['listing']['usableAreas']
+        }
+        apartamentos_totais.append(detalhes_imovel)
+
+# Criar um DataFrame com os dados extraídos
+df = pd.DataFrame(apartamentos_totais)
+
+# Salvar o DataFrame em um arquivo Excel
+df.to_excel('apartamentos.json.xlsx', index=False)
+
+print('Dados exportados para apartamentos.json.xlsx com sucesso!')
