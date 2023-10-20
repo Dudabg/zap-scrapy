@@ -23,7 +23,7 @@ navegador = webdriver.Chrome(service=servico, options=opcoes)
 apartamentos_totais = []
 
 # Loop através das páginas de 1 a 100
-for pagina in range(1, 101):
+for pagina in range(1, 3):
     # Construir a URL da página atual
     url = f'https://www.zapimoveis.com.br/venda/apartamentos/mg+uberlandia/?pagina={pagina}'
 
@@ -40,7 +40,7 @@ for pagina in range(1, 101):
     
 
     for i in range(0,6000):
-            navegador.execute_script('window.scrollBy(0,16)')
+            navegador.execute_script('window.scrollBy(0,54)')
             # Espera um curto período de tempo para permitir o carregamento do conteúdo
            
 
@@ -75,8 +75,15 @@ for pagina in range(1, 101):
     tamanho_element = apartamento.find('p', class_='l-text l-u-color-neutral-28 l-text--variant-body-small l-text--weight-regular card__amenity')
     tamanho = tamanho_element.text.strip() if tamanho_element else 'N/A'
 
-    anunciante_element = apartamento.find('div', class_='publisher__info')
+    anunciante_element = apartamento.find('div', class_='publisher__title heading-small align-left')
     anunciante = anunciante_element.text.strip() if anunciante_element else 'N/A'
+
+    telefone_element = apartamento.find('a', class_='publisher__phone js-publisher-phone link link-cta link--bold')
+    telefone = telefone_element.text.strip() if anunciante_element else 'N/A'
+
+    codigo_element = apartamento.find('ul', class_='postlead-modal__code')
+    codigo = codigo_element.text.strip() if anunciante_element else 'N/A'
+
 
     # Adicionar informações ao dicionário
     detalhes_apartamento['Titulo'] = titulo
@@ -85,6 +92,9 @@ for pagina in range(1, 101):
     detalhes_apartamento['Descricao'] = descricao
     detalhes_apartamento['Tamanho'] = tamanho
     detalhes_apartamento['Anunciante'] = anunciante
+    detalhes_apartamento['Telefone'] = telefone
+    detalhes_apartamento['Codigo'] = codigo
+    
 
     # Adicionar o dicionário à lista de imóveis totais
     apartamentos_totais.append(detalhes_apartamento)
