@@ -15,11 +15,11 @@ for j in range(1, 10):
     for i in range(0, 6):
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.content, 'html.parser')
-        div_tags = soup.find_all('div', class_='js-carousel-item carousel__item')
+        div_tags = soup.find_all('li', class_='js-carousel-item carousel__item')
 
         img_urls = []
         for div_tag in div_tags:
-            img_tag = div_tag.find('img')  
+            img_tag = div_tag.find('img').get('src')  
             if img_tag and 'src' in img_tag.attrs:
                 img_urls.append(img_tag['src'])  
 
@@ -32,5 +32,10 @@ for j in range(1, 10):
             data_list.append(data)
 
 # Fora do loop, após terminar de coletar todas as URLs de imagens
-df = pd.DataFrame(data_list)
-df.to_excel('imoveis.xlsx', index=False)
+# df = pd.DataFrame(data_list)
+# df.to_excel('imoveis.xlsx', index=False)
+
+
+df=pd.read_excel('imoveis.xlsx')
+lista_link =df ('url_imagens').copy()
+lista_imoveis= []
