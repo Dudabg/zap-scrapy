@@ -14,7 +14,7 @@ if(not os.path.exists(diretorio_pai)):
     os.makedirs(diretorio_pai)
 
 
-for i in range(0,10):
+for i in range(0,40):
 
     url =lista_links[i] 
 
