@@ -182,6 +182,12 @@ for j in range(1, 40):
         except:
           anunciante_telefone = None
 
+        try:
+          amenties = i.get('listing').get('amenities')
+        except:
+          amenties = None
+
+           
 
     
         print(id)
@@ -211,6 +217,7 @@ for j in range(1, 40):
         print(anunciante)
         print(anunciante_id)
         print(anunciante_telefone)
+        print(amenties)
        
           
 
@@ -243,6 +250,7 @@ for j in range(1, 40):
                 'anunciante': anunciante,
                 'anunciante_id': anunciante_id,
                 'anunciante_telefone': anunciante_telefone,
+                'amenties': amenties
                
                 
             }
@@ -254,7 +262,7 @@ for j in range(1, 40):
 df = pd.DataFrame(data_list)
 
 # Save the DataFrame to a CSV file
-df.to_csv('imoveis.csv', index=False)
+df.to_excel('imoveis.xlsx', index=False)
   
   
   
