@@ -1,36 +1,48 @@
-import requests
-import json 
-import pandas as pd
-import time
+import requests #blibioteca para fazer requisições do site
+import json #blibioteca para transformar o json em um dicionario
+import pandas as pd #biblioteca para manipular os dados
+import time #biblioteca para manipular o tempo
 
 
 
-payload = {}
-headers = {
+
+payload = {} #dicionario vazio
+headers = { #mostrar o navegador que nao é um robo
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
   'X-Domain': '.zapimoveis.com.br',
   'Cookie': '__cfruid=42d2a3aa93f72f906efb1036cc18470737173479-1698082455'
-}
+} #cabecalhos
 
-data_list = []
+data_list = [] #lista vazia
 
-index = 10
-for j in range(1, 40): 
-  for i in range(0,6):
-    try:
+index = 10 #indice inicial
+for j in range(1, 40): #quantidade de paginas
+  for i in range(0,6): #quantidade de apartamentos
+
+    try: #tratamento de erros
       url = f'https://glue-api.zapimoveis.com.br/v2/listings?user=df22c4a3-badb-4bdd-bd04-f4dd06c95b90&portal=ZAP&includeFields=search%28result%28listings%28listing%28listingsCount%2CsourceId%2CdisplayAddressType%2Camenities%2CusableAreas%2CconstructionStatus%2ClistingType%2Cdescription%2Ctitle%2Cstamps%2CcreatedAt%2Cfloors%2CunitTypes%2CnonActivationReason%2CproviderId%2CpropertyType%2CunitSubTypes%2CunitsOnTheFloor%2ClegacyId%2Cid%2Cportal%2CunitFloor%2CparkingSpaces%2CupdatedAt%2Caddress%2Csuites%2CpublicationType%2CexternalId%2Cbathrooms%2CusageTypes%2CtotalAreas%2CadvertiserId%2CadvertiserContact%2CwhatsappNumber%2Cbedrooms%2CacceptExchange%2CpricingInfos%2CshowPrice%2Cresale%2Cbuildings%2CcapacityLimit%2Cstatus%2CpriceSuggestion%29%2Caccount%28id%2Cname%2ClogoUrl%2ClicenseNumber%2CshowAddress%2ClegacyVivarealId%2ClegacyZapId%2CcreatedDate%2Cminisite%2Ctier%29%2Cmedias%2CaccountLink%2Clink%29%29%2CtotalCount%29%2Cpage%2Cfacets%2CfullUriFragments%2Cdevelopments%28search%28result%28listings%28listing%28listingsCount%2CsourceId%2CdisplayAddressType%2Camenities%2CusableAreas%2CconstructionStatus%2ClistingType%2Cdescription%2Ctitle%2Cstamps%2CcreatedAt%2Cfloors%2CunitTypes%2CnonActivationReason%2CproviderId%2CpropertyType%2CunitSubTypes%2CunitsOnTheFloor%2ClegacyId%2Cid%2Cportal%2CunitFloor%2CparkingSpaces%2CupdatedAt%2Caddress%2Csuites%2CpublicationType%2CexternalId%2Cbathrooms%2CusageTypes%2CtotalAreas%2CadvertiserId%2CadvertiserContact%2CwhatsappNumber%2Cbedrooms%2CacceptExchange%2CpricingInfos%2CshowPrice%2Cresale%2Cbuildings%2CcapacityLimit%2Cstatus%2CpriceSuggestion%29%2Caccount%28id%2Cname%2ClogoUrl%2ClicenseNumber%2CshowAddress%2ClegacyVivarealId%2ClegacyZapId%2CcreatedDate%2Cminisite%2Ctier%29%2Cmedias%2CaccountLink%2Clink%29%29%2CtotalCount%29%29%2CsuperPremium%28search%28result%28listings%28listing%28listingsCount%2CsourceId%2CdisplayAddressType%2Camenities%2CusableAreas%2CconstructionStatus%2ClistingType%2Cdescription%2Ctitle%2Cstamps%2CcreatedAt%2Cfloors%2CunitTypes%2CnonActivationReason%2CproviderId%2CpropertyType%2CunitSubTypes%2CunitsOnTheFloor%2ClegacyId%2Cid%2Cportal%2CunitFloor%2CparkingSpaces%2CupdatedAt%2Caddress%2Csuites%2CpublicationType%2CexternalId%2Cbathrooms%2CusageTypes%2CtotalAreas%2CadvertiserId%2CadvertiserContact%2CwhatsappNumber%2Cbedrooms%2CacceptExchange%2CpricingInfos%2CshowPrice%2Cresale%2Cbuildings%2CcapacityLimit%2Cstatus%2CpriceSuggestion%29%2Caccount%28id%2Cname%2ClogoUrl%2ClicenseNumber%2CshowAddress%2ClegacyVivarealId%2ClegacyZapId%2CcreatedDate%2Cminisite%2Ctier%29%2Cmedias%2CaccountLink%2Clink%29%29%2CtotalCount%29%29%2Cschema&categoryPage=RESULT&developmentsSize=0&superPremiumSize=0&__zt=&business=SALE&parentId=null&listingType=USED&priceMin=1000000&addressCity=Uberl%C3%A2ndia&addressLocationId=BR%3EMinas+Gerais%3ENULL%3EUberlandia&addressState=Minas+Gerais&addressPointLat=-24.003067&addressPointLon=-46.417853&addressType=city&unitTypes=HOME&unitTypesV3=CONDOMINIUM&unitSubTypes=CONDOMINIUM&usageTypes=RESIDENTIAL&page=' + str(j) + '&size=15&from='+ str(index) +'&levels=CITY&ref='
-      response = requests.request("GET", url, headers=headers, data=payload,timeout=2)
+      response = requests.request("GET", url, headers=headers, data=payload,timeout=2) 
       time.sleep(2)
       json = response.json()
-      imoveis = json.get('search').get('result').get('listings')
-      index+=15
+      imoveis = json.get('search').get('result').get('listings') #pegando do json os dados que eu preciso
+      index+=15 #aumentando o indice
 
-      for i in imoveis:
+      for i in imoveis: #percorrendo os imoveis
 
         try:
           id = i.get('listing').get('id')
         except:
           id = None
+
+        try:
+          tipo_imovel = i.get('listing').get('unitTypes')
+        except:
+          tipo_imovel = None
+
+        try:
+          listingType = i.get('listing').get('listingType')
+        except:
+          listingType = None
 
         try:
           descricao = i.get('listing').get('description')
@@ -93,9 +105,19 @@ for j in range(1, 40):
           rua = None
 
         try:
+          numero_rua= i.get('listing').get('address').get('streetNumber')
+        except:
+          numero_rua = None
+
+        try:
           bairro= i.get('listing').get('address').get('neighborhood')
         except:
           bairro = None
+
+        try:
+          cep = i.get('listing').get('address').get('zipCode')
+        except:
+          cep = None
 
         try:
           imovel = i.get('listing').get('propertyType')
@@ -178,18 +200,43 @@ for j in range(1, 40):
           anunciante_id = None
 
         try:
-          anunciante_telefone = i.get('listing').get('whatsappNumber')
-        except:
+          anunciante_telefone = i.get('listing').get('phones')
+        except:     
           anunciante_telefone = None
 
         try:
-          amenties = i.get('listing').get('amenities')
+          anunciante_telefone_whatsapp = i.get('listing').get('whatsappNumber')
         except:
-          amenties = None
+          anunciante_telefone_whatsapp = None
+
+        try:
+          caracteristicas = i.get('listing').get('amenities')
+        except:
+          caracteristicas = None
+
+        try:
+          status = i.get('listing').get('status')
+        except:
+          status = None
+
+        try:
+          andares = i.get('listing').get('floor')
+        except: 
+          andares = None
+
+        try:
+          iptu = i.get('listing').get('pricingInfos').get('yearlyIptu')
+        except:
+          iptu = None
+
+        try:
+          valor_condominio = i.get('listing').get('pricingInfos').get('monthlyCondoFee')
+        except:
+          valor_condominio = None
 
            
 
-    
+        #printando os dados na tela
         print(id)
         print(titulo)
         print(preco)
@@ -216,13 +263,23 @@ for j in range(1, 40):
         print(proprietario_telefone)
         print(anunciante)
         print(anunciante_id)
+        print(anunciante_telefone_whatsapp)
         print(anunciante_telefone)
-        print(amenties)
+        print(caracteristicas)
+        print(status)
+        print(tipo_imovel)
+        print(listingType)
+        print (numero_rua)
+        print(cep)
+        print(andares)
+        print(iptu)
+        print(valor_condominio)
+        
        
           
 
           
-        data = {
+        data = { #criando um dicionário para pegar as informações
                 'id': id,
                 'titulo': titulo,
                 'descricao':descricao,
@@ -250,19 +307,28 @@ for j in range(1, 40):
                 'anunciante': anunciante,
                 'anunciante_id': anunciante_id,
                 'anunciante_telefone': anunciante_telefone,
-                'amenties': amenties
-               
-                
+                'caracteristicas': caracteristicas,
+                'status': status,
+                'tipo_imovel': tipo_imovel,
+                'listingType': listingType,
+                'numero_rua': numero_rua,
+                'cep': cep,
+                'andares': andares,
+                'iptu': iptu,
+                'valor_condominio': valor_condominio
+              
+                  
             }
-        data_list.append(data)
+        
+
+        data_list.append(data) #adicionando o dicionário na lista
     except:
-      time.sleep(300)
+      time.sleep(100)
 
-# Convert the list of dictionaries to a pandas DataFrame
-df = pd.DataFrame(data_list)
+      df = pd.DataFrame(data_list) #criando o dataframe
+      df.to_excel('imoveis.xlsx', index=False) #salvando o dataframe em um arquivo
 
-# Save the DataFrame to a CSV file
-df.to_excel('imoveis.xlsx', index=False)
-  
+
+
   
   

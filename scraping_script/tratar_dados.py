@@ -47,3 +47,6 @@ df = pd.DataFrame(apartamentos_totais)
 df.to_excel('apartamentos.json.xlsx', index=False)
 
 print('Dados exportados para apartamentos.json.xlsx com sucesso!')
+df = pd.DataFrame(data_list) #criando o dataframe
+df.to_excel('imoveis.xlsx', index=False) #salvando o dataframe em um arquivo
+  
