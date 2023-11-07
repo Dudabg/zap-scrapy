@@ -1,8 +1,8 @@
-import mysql.connector
 import pandas as pd
+import mysql.connector
 import datetime
 
-# Configurando as informações de conexão
+# Conectar ao banco de dados MySQL
 conexao = mysql.connector.connect(
     host='193.203.183.54',
     user='perdigueiro',
@@ -10,32 +10,42 @@ conexao = mysql.connector.connect(
     database='perdigueiro',
 )
 
-# Conectando ao banco de dados
-connection = mysql.connector.connect(host=193.203.183.54, port=port, database=perdigueiro, user=perdigueiro, password=password)
+# Ler a planilha
+cursor = conexao.cursor()
 
-# Criando um cursor
-cursor = connection.cursor()
+df = pd.read_csv('banco de dados\\imoveis.csv')
+time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-# Obtendo o último id garimpo
-cursor.execute("SELECT id_garimpo FROM garimpo ORDER BY id_garimpo DESC LIMIT 1")
-last_id_garimpo = cursor.fetchone()[0]
+# Obter o último idgarimpo da tabela garimpo
+cursor.execute(comando)
+conexao.commit()
+comando = """ SELECT LAST_INSERT_ID();"""
+cursor.execute(comando)
+id_garimpo = cursor.fetchall()
+id_garimpo = id_garimpo[0][0]
 
-# Abrindo a planilha
-with open("data.csv", "r") as f:
-    for line in f:
-        # Separando os dados da linha
-        chave, valor = line.split(",")
+# Inserir dados na tabela garimpo_dados
+cursor = conexao.cursor()
 
-        # Inserindo os dados na tabela
-        cursor.execute(
-            "INSERT INTO garimpo_dados (id_garimpo, chave, valor) VALUES (%s, %s, %s)",
-            (last_id_garimpo, chave, valor),
-        )
+for i in range(0, 3511):
+    idgarimpo = id_garimpo
+    chave =
+    valor = 
+    criadopor = 'Duda'
+    criadoem = time
+    alteradopor = 'Duda'
+    alteradoem = time
 
-# Confirmando as alterações
-connection.commit()
+    
+    
+    
+    comando_sql = f'INSERT INTO garimpo_dados (idgarimpodados, idgarimpo, chave, valor, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{idgarimpo}', '{chave}', '{valor}', '{criadopor}', '{criadoem}', '{alteradopor}',' {alteradoem}')'
+    cursor.execute(comando_sql)     
 
-# Fechando a conexão
-cursor.close()
-connection.close()
 
+    conexao.commit()
+    cursor.close()
+
+conexao.close()
+
+print('Dados inseridos com sucesso na tabela garimpo_dados.')

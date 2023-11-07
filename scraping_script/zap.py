@@ -108,3 +108,15 @@ df = pd.DataFrame(apartamentos_totais)
 df.to_excel('C:/Users/HP/Desktop/zap-scrapy/scraping_script/apartamentos.xlsx', index=False)
 
 print('Dados exportados para apartamentos.xlsx com sucesso!')
+
+
+
+
+
+        data_list.append(data) #adicionando o dicionário na lista
+    except:
+      time.sleep(100)
+
+      df = pd.DataFrame(data_list) #criando o dataframe
+      df.to_excel('imoveis_teste.xlsx', index=False) #salvando o dataframe em um arquivo
+
