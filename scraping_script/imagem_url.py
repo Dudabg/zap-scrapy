@@ -4,11 +4,11 @@ import pandas as pd
 import os
 
 
-df= pd.read_excel('imoveis.xlsx')
+df= pd.read_excel('imoveis_zap.xlsx')
 print(df)
 lista_links = df['url'].copy()
 
-lista_id = df['id'].copy()
+lista_id = df['id_ambiente'].copy()
 diretorio_pai = 'C:\\Users\\HP\\Desktop\\zap-scrapy\\fotos'
 if(not os.path.exists(diretorio_pai)):
     os.makedirs(diretorio_pai)
@@ -47,3 +47,7 @@ for i in range(0,40):
             resposta = requests.get(img_src, headers=headers)
             imagem.write(resposta.content)
 
+
+
+"""INSERT INTO garimpofotos (idambiente, ambiente, url , criadopor, criadoem, alteradopor, alteradoem) 
+                            VALUES ("{id_ambiente}","VivaReal", "{directory_imagem}", "Gustavo", "{tempo}", "Gustavo", "{tempo}")"""

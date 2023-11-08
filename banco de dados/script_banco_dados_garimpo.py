@@ -3,23 +3,23 @@ import pandas as pd
 import datetime
 
 conexao = mysql.connector.connect(
-    host='193.203.183.54',
-    user='perdigueiro',
+    host='uberlandiaonline.com.br',
+    user='uberla14_perdigueiro',
     password='V3nc3d0r3s@23',
-    database='perdigueiro',
+    database='uberla14_perdigueiro',
 )
 
 cursor = conexao.cursor()
 
-df = pd.read_csv('banco de dados\\imoveis.csv')
-id = df['id'].copy()
-url = df['url'].copy()
+df = pd.read_csv('banco de dados\\imoveis_zap.csv')
+id_ambiente = df['id_ambiente'].copy()
+url_anunciante = df['url_anunciante'].copy()
 time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-for i in range(0, 3511):
-    idambiente = f'{id[i]/1000}'
+for i in range(len(df)):
+    idambiente = f'{id_ambiente[i]}'
     ambiente = 'ZAP_IMOVEIS'
-    caminho = f'{url[i]}'
+    caminho = f'{url_anunciante[i]}'
     criadopor = 'Duda'
     criadoem = time
     alteradopor = 'Duda'

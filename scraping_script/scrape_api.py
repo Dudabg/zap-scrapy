@@ -7,10 +7,10 @@ import datetime #biblioteca para manipular o tempo
 
 
 conexao = mysql.connector.connect(
-          host='193.203.183.54',
-          user='perdigueiro',
+          host='uberlandiaonline.com.br',
+          user='uberla14_perdigueiro',
           password='V3nc3d0r3s@23',
-          database='perdigueiro',
+          database='uberla14_perdigueiro',
       )
 
 
@@ -132,9 +132,9 @@ def traduz_palavra(palavra):
         
         }
 
-        if palavra in dicionario_traducao:
+    if palavra in dicionario_traducao:
             return dicionario_traducao [palavra]
-        else:
+    else:
             return palavra
 
     
@@ -143,7 +143,7 @@ def traduz_palavra(palavra):
 
 
 index = 10 #indice inicial
-for j in range(1, 2): #quantidade de paginas
+for j in range(1, 5): #quantidade de paginas
   for i in range(0,6): #quantidade de apartamentos
 
     try: #tratamento de erros
@@ -299,12 +299,12 @@ for j in range(1, 2): #quantidade de paginas
           status = None
 
         try:
-          url_anunciante = i.get('link').get('href')
-        except:
-          url_anunciante = None
-          url_link = "https://www.zapimoveis.com.br" + url
+          url_anuncio = i.get('link').get('href')
+          url_anuncio = "https://www.zapimoveis.com.br" + url_anuncio
       
-
+        except:
+          url_anuncio = None
+          
 
 
 
@@ -370,7 +370,7 @@ for j in range(1, 2): #quantidade de paginas
         print(numero_anunciante_1)
         print(numero_anunciante_2)
         print(status)
-        print(url_anunciante)
+        print(url_anuncio)
 
         
           
@@ -398,82 +398,88 @@ for j in range(1, 2): #quantidade de paginas
                 'iptu': iptu,
                 'taxa_condominio': taxa_condominio,
                 'descricao':descricao,
-                'caracteristicas': caracteristicas,
+                'caracteristicas': caracteristicas, 
                 'data_anuncio': data_anuncio,
                 'nome_anunciante': nome_anunciante,
                 'cod_anunciante': cod_anunciante,
                 'numero_anunciante_1': numero_anunciante_1,
                 'numero_anunciante_2': numero_anunciante_2,
-                'url_anunciante': url_anunciante,
                 'status': status,
+                'url_anuncio': url_anuncio,
 
                 
                   
             }
+        
+        data_list.append(data) #adicionando o dicionário na lista
+    except:
+      time.sleep(200)
+
+    # df = pd.DataFrame(data_list) #criando o dataframe
+    # df.to_csv('imoveis_zap.csv', index=False)
+    # df.to_excel('imoveis_zap.xlsx', index=False)
+
+      
+    cursor = conexao.cursor()
+
+    df = pd.read_csv('imoveis_zap.csv')
+    id_ambiente = df['id_ambiente'].copy()
+    url_anuncio = df['url_anuncio'].copy()
+    tempo = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    for i in range(len(df)):
+          idambiente = f'{id_ambiente[i]}'
+          ambiente = 'ZAP_IMOVEIS'
+          caminho = f'{url_anuncio[i]}'
+          criadopor = 'Duda'
+          criadoem = tempo
+          alteradopor = 'Duda'
+          alteradoem = tempo
+
+          comando_sql = f"INSERT INTO garimpo ( idambiente, ambiente, caminho, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{idambiente}', '{ambiente}', '{caminho}', '{criadopor}', '{criadoem}', '{alteradopor}',' {alteradoem}')"
+          cursor.execute(comando_sql)
+          
+
+          conexao.commit()
+    # conexao.close()
 
 
-cursor = conexao.cursor()
+    cursor = conexao.cursor()
 
-df = pd.read_csv('banco de dados\\imoveis.csv')
-id = df['id'].copy()
-url = df['url'].copy()
-time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    df = pd.read_csv('imoveis_zap.csv')
 
-for i in range(0, 3511):
-    idambiente = f'{id[i]/1000}'
-    ambiente = 'ZAP_IMOVEIS'
-    caminho = f'{url[i]}'
-    criadopor = 'Duda'
-    criadoem = time
-    alteradopor = 'Duda'
-    alteradoem = time
 
-    comando_sql = f"INSERT INTO garimpo ( idambiente, ambiente, caminho, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{idambiente}', '{ambiente}', '{caminho}', '{criadopor}', '{criadoem}', '{alteradopor}',' {alteradoem}')"
-    cursor.execute(comando_sql)
+    # Obter o último idgarimpo da tabela garimpo
+    comando = """SELECT LAST_INSERT_ID();"""
+    cursor.execute(comando)
+    id_garimpo = cursor.fetchall()
+    id_garimpo = id_garimpo[0][0]
+    tempo = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    for item in data.itens():
+      if item[1] is not None:
+       if isinstance(item[1], list):
+          for i in item[1]:
+            comando = f"""INSERT INTO garimpo_dados (idgarimpo, chave, valor, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{id_garimpo}', '{traduz_palavra(i)}', 'sim', 'Duda', '{tempo}', 'Duda', '{tempo}')"""
+            cursor.execute(comando)
+            conexao.commit()
+
+          else:
+          
+            comando = f"""INSERT INTO garimpo_dados (idgarimpo, chave, valor, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{id_garimpo}', '{item[0]}', '{traduz_palavra(item[1])}', 'Duda', '{tempo}', 'Duda', '{tempo}')"""
+          cursor.execute(comando)
+          conexao.commit()
+
+
+      else: 
+
+        pass      
+
     
-
-    conexao.commit()
-conexao.close()
-
-
-cursor = conexao.cursor()
-
-df = pd.read_csv('banco de dados\\imoveis.csv')
-time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-# Obter o último idgarimpo da tabela garimpo
-cursor.execute(comando)
-conexao.commit()
-comando = """ SELECT LAST_INSERT_ID();"""
-cursor.execute(comando)
-id_garimpo = cursor.fetchall()
-id_garimpo = id_garimpo[0][0]
-
-tempo = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-for item in data.itens():
-  if item[1] is not None:
-   if isinstance(item[1], list):
-      for i in item[1]:
-        comando = f"""INSERT INTO garimpo_dados (idgarimpo, chave, valor, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{id_garimpo}', '{traduz_palavra(i)}', 'sim', 'Duda', '{tempo}', 'Duda', '{tempo}')"""
-        cursor.execute(comando)
-        conexao.commit()
-
-    else
-       
-      comando = f"""INSERT INTO garimpo_dados (idgarimpo, chave, valor, criadopor, criadoem, alteradopor, alteradoem) VALUES ('{id_garimpo}', '{item[0]}', '{traduz_palavra(item[1])}', 'Duda', '{tempo}', 'Duda', '{tempo}')"""
-      cursor.execute(comando)
       conexao.commit()
+    conexao.close()
 
 
-  else 
-
-    pass      
-
-  print('posiçao = ', pos)
-
-  conexao.commit()
-conexao.close()
 
 
 
